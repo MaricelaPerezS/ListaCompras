@@ -92,12 +92,20 @@ agregar.addEventListener("click", (event)=>{
    
    contador++; //aquí la agrego porque es después de dar click
    document.getElementById("contadorProductos").innerHTML=contador;
-    let precio= (Math.floor((Math.random()*50)*100))/100; //*100 para que recorra los decimales
+   
+   //Para almacenar información en mi página web
+   //window.localStorage //window se refiere a la ventana de mi navegador, local storage es donde quiero almacenar la información, no es necesario poner window.
+   localStorage.setItem("contadorProductos",contador); //necesito llave (nombre que sea, yo pongo uno con el que relaciono) para acceder al elemento, y también un valo
+
+
+   let precio= (Math.floor((Math.random()*50)*100))/100; //*100 para que recorra los decimales
     let cantidad = parseFloat(txtNumber.value); //la convertimos en número porque viene de un texto
    totalEnProductos += Math.ceil(cantidad);
    document.getElementById("productosTotal").innerHTML=totalEnProductos; 
+   localStorage.setItem("productosTotal",totalEnProductos);
    costoTotal += (precio * cantidad);
-    total.innerHTML =`$ ${costoTotal}`;
+    total.innerHTML =`$ ${costoTotal.toFixed(2)}`;
+    localStorage.setItem("costoTotal",costoTotal.toFixed(2));
     let tmp = `<tr>
                 <th scope="row">${contador}</th>
                 <td>${txtNombre.value}</td>
@@ -125,5 +133,23 @@ txtNumber.addEventListener("blur", (event) => {
     event.target.value = event.target.value.trim();
 }
 );
+
+window.addEventListener("load", function(){
+    if(localStorage.getItem("contadorProductos")!=null){
+        contador = parseInt(localStorage.getItem("contadorProductos"));
+        document.getElementById("contadorProductos").innerHTML=contador;
+    }
+    if(localStorage.getItem("productosTotal")!=null){
+        totalEnProductos = parseInt(localStorage.getItem("productosTotal"));
+        document.getElementById("productosTotal").innerHTML=totalEnProductos;
+    }
+    if(localStorage.getItem("precioTotal")!=null){
+        costoTotal = parseInt(localStorage.getItem("precioTotal"));
+        
+    total.innerHTML=costoTotal;
+}
+    
+    
+} );
 
 
