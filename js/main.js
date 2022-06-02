@@ -1,10 +1,15 @@
+let contador = 0; //para hacer 
+let costoTotal= 0;//necesito una variable global que vaya almacenando los precios 
+
 let element = document.getElementById("totalPrecio"); //solo para un elemento, es único 
-element.innerHTML= "Total en precio";
+element.innerHTML= "Total en precio"; 
 
 let txtNombre = document.getElementById("Name");
 //txtNombre.value= "Leche Semidescremada"; //modificar la información 
 //console.log(txtNombre.value);
 let txtNumber = document.getElementById("Number");
+
+let total= document.getElementById("precioTotal");
 //Puedo modificar varios elementos, ya que id solo es para una cosa
 //entonces, para varios elementos podemos categorizar (clase) por campo
 
@@ -34,26 +39,73 @@ let cuerpoTabla = tabla.getElementsByTagName("tbody"); //cuerpo tabla está alma
                             <td>Leche descremada</td>
                             <td>3</td>
                             <td>$23</td>
-                            </tr>`;
- */
+                            </tr>`; */  
+//Para validar los cuadros de producto y cantidad                      
+function validarNombre(){
+if (txtNombre.value.length<3){
+    return false; //return regresa algo y además termina la función
+}// if
+return true;
+} //validaciónNombre
 
-let agregar = document.getElementById("btnAgregar");
+function validarCantidad(){
+    if ( txtNumber.value.length==0) {
+        return false;
+    } //if
+if ( isNaN(txtNumber.value)) {
+    return false;
+} //if
+if (parseFloat(txtNumber.value)<=0){
+    return false;
+} //if
+return true;
+}//validarCantidad
+                            let agregar = document.getElementById("btnAgregar");
 //Agregar un evento al botón cuando doy clic
 agregar.addEventListener("click", (event)=>{
     //console.log("Clic en el botón agregar", event);
+   event.preventDefault();
+   if ( (! validarNombre()) || (! validarCantidad()) ){
+   let lista="";
+    if (!validarNombre()){
+        txtNombre.style.border="red thin solid";
+        lista+= "<li>Se debe escribir un nombre válido</li>";
+    } //
+    if (!validarCantidad()){
+        txtNumber.style.border="red thin solid";
+        lista+= "<li>Se debe escribir un número válido</li>";
+    } //
+    document.getElementById("alertValidacionesTexto").innerHTML=`Los campos deben ser llenados correctamente
+    <ul>${lista}</ul>
+    `;
     
-    let precio= Math.random()*50;
+    document.getElementById("alertValidaciones").style.display="block";   
+    setTimeout(function (){
+        document.getElementById("alertValidaciones").style.display="none";
+    },
+    4000
+    );
+    return false;
+   } //if
+      
+   
+   contador++; //aquí la agrego porque es después de dar click
+   document.getElementById("contadorProductos").innerHTML=contador;
+    let precio= (Math.floor((Math.random()*50)*100))/100; //*100 para que recorra los decimales
+    let cantidad = parseFloat(txtNumber.value); //la convertimos en número porque viene de un texto
+    costoTotal += (precio * cantidad);
+    total.innerHTML =`$ ${costoTotal}`;
     let tmp = `<tr>
-                <th scope="row">1</th>
+                <th scope="row">${contador}</th>
                 <td>${txtNombre.value}</td>
                 <td>${txtNumber.value}</td>
-                <td>$ ${precio}</td>
-                </tr>`;
+                <td>$ ${precio}</td>  
+                </tr>`;  //toFixed es para los decimales que quiero ver, ej. 2 solo son 2 decimales, de manera en mi página
     
     console.log(tmp);
     //usamos get elements by tag name busca cualquier etiqueta body, y me regresa un colección o como un arreglo, dentro de la tabla solo tengo el elemento tbody y solo hay un elemento en 
     //mi tabla de html index, y por eso pone el 0
-    cuerpoTabla[0].innerHTML += tmp;
+    cuerpoTabla[0].innerHTML += tmp; //todo esto lo agrega dentro del tbody que es la l+inea 100 de html que tiene un alínea vacía. Cuando declare cuerpo tabla ahí puse que la etiqueta que busca es tbody
     txtNumber.value="";
     txtNombre.value="";
     txtNombre.focus(); 
@@ -61,5 +113,14 @@ agregar.addEventListener("click", (event)=>{
 }
 );
 
+txtNombre.addEventListener("blur", (event)  => {
+    event.target.value = event.target.value.trim();
+}
+);
+
+txtNumber.addEventListener("blur", (event) => {
+    event.target.value = event.target.value.trim();
+}
+);
 
 
