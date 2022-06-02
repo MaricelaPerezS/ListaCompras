@@ -1,5 +1,6 @@
 let contador = 0; //para hacer 
 let costoTotal= 0;//necesito una variable global que vaya almacenando los precios 
+let totalEnProductos = 0; //variable para mi contador de total de productos
 
 let element = document.getElementById("totalPrecio"); //solo para un elemento, es único 
 element.innerHTML= "Total en precio"; 
@@ -93,7 +94,9 @@ agregar.addEventListener("click", (event)=>{
    document.getElementById("contadorProductos").innerHTML=contador;
     let precio= (Math.floor((Math.random()*50)*100))/100; //*100 para que recorra los decimales
     let cantidad = parseFloat(txtNumber.value); //la convertimos en número porque viene de un texto
-    costoTotal += (precio * cantidad);
+   totalEnProductos += Math.ceil(cantidad);
+   document.getElementById("productosTotal").innerHTML=totalEnProductos; 
+   costoTotal += (precio * cantidad);
     total.innerHTML =`$ ${costoTotal}`;
     let tmp = `<tr>
                 <th scope="row">${contador}</th>
