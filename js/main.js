@@ -1,6 +1,9 @@
 let contador = 0; //para hacer 
 let costoTotal= 0;//necesito una variable global que vaya almacenando los precios 
 let totalEnProductos = 0; //variable para mi contador de total de productos
+//Arreglo global
+let datos = [];
+
 
 let element = document.getElementById("totalPrecio"); //solo para un elemento, es único 
 element.innerHTML= "Total en precio"; 
@@ -61,7 +64,8 @@ if (parseFloat(txtNumber.value)<=0){
 } //if
 return true;
 }//validarCantidad
-                            let agregar = document.getElementById("btnAgregar");
+
+let agregar = document.getElementById("btnAgregar");
 //Agregar un evento al botón cuando doy clic
 agregar.addEventListener("click", (event)=>{
     //console.log("Clic en el botón agregar", event);
@@ -105,15 +109,32 @@ agregar.addEventListener("click", (event)=>{
    localStorage.setItem("productosTotal",totalEnProductos);
    costoTotal += (precio * cantidad);
     total.innerHTML =`$ ${costoTotal.toFixed(2)}`;
-    localStorage.setItem("costoTotal",costoTotal.toFixed(2));
-    let tmp = `<tr>
+    localStorage.setItem("precioTotal",costoTotal.toFixed(2));
+   
+   //JSON
+  let elemento=`{"id":${contador},
+  "nombre":"${txtNombre.value}",
+   "cantidad":${txtNumber.value},
+    "precio":${precio}
+   }`;
+   
+   //Parse sive para pasar una cadena a un objeto
+   //Stringify sirve para pasar un objeto a cadena
+
+   datos.push(JSON.parse(elemento) ); //mientras voy metiendo datos, también voy almacenando en variable global
+   //                  key/nombe que sea     
+   localStorage.setItem("elementosTabla", JSON.stringify(datos) ); //meto en mi local storage la información del arreglo datos
+
+   console.log(datos);
+   
+   let tmp = `<tr>
                 <th scope="row">${contador}</th>
                 <td>${txtNombre.value}</td>
                 <td>${txtNumber.value}</td>
                 <td>$ ${precio}</td>  
                 </tr>`;  //toFixed es para los decimales que quiero ver, ej. 2 solo son 2 decimales, de manera en mi página
     
-    console.log(tmp);
+    //console.log(tmp);
     //usamos get elements by tag name busca cualquier etiqueta body, y me regresa un colección o como un arreglo, dentro de la tabla solo tengo el elemento tbody y solo hay un elemento en 
     //mi tabla de html index, y por eso pone el 0
     cuerpoTabla[0].innerHTML += tmp; //todo esto lo agrega dentro del tbody que es la l+inea 100 de html que tiene un alínea vacía. Cuando declare cuerpo tabla ahí puse que la etiqueta que busca es tbody
@@ -148,7 +169,19 @@ window.addEventListener("load", function(){
         
     total.innerHTML=costoTotal;
 }
-    
+  
+if(localStorage.getItem("elementosTabla")!=null){
+    datos = JSON.parse(localStorage.getItem("elementosTabla") );
+    datos.forEach(element => { //uso un foreach porque es parte de esto que estamos haciendo)
+        cuerpoTabla[0].innerHTML+= `<tr>
+        <th scope="row">${element.id}</th>
+        <td>${element.nombre}</td>
+        <td>${element.cantidad}</td> 
+        <td>$ ${element.precio}</td>  
+        </tr>`; //uso element. porque es parte del foreach
+    });
+
+}//if elementos
     
 } );
 
